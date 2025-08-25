@@ -1,0 +1,1054 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1" name="viewport"/>
+  <title>Ayame Official - Link Collection</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    /* CSS yang sudah ada */
+    body {
+      font-family: "Poppins", sans-serif;
+      scroll-behavior: smooth;
+    }
+    .card-hover {
+      transition: all 0.3s ease;
+    }
+    .card-hover:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+    .profile-img {
+      border: 4px solid rgba(255, 255, 255, 0.3);
+      transition: all 0.3s ease;
+    }
+    .profile-img:hover {
+      border-color: rgba(255, 255, 255, 0.7);
+      transform: scale(1.05);
+    }
+    .social-icon {
+      transition: all 0.2s ease;
+    }
+    .social-icon:hover {
+      transform: scale(1.2);
+    }
+    .share-btn {
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+    .share-btn:hover {
+      color: #3730a3 !important;
+      transform: scale(1.1);
+    }
+    .admin-panel {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+    }
+    .modal {
+      transition: opacity 0.25s ease;
+    }
+    /* Gaya untuk modal share */
+    .share-modal {
+      display: none;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background-color: white;
+      border-top-left-radius: 15px;
+      border-top-right-radius: 15px;
+      padding: 1.5rem;
+      box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.1);
+      z-index: 100;
+    }
+    .share-options {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+      text-align: center;
+    }
+    .share-option {
+      padding: 0.5rem;
+      border-radius: 10px;
+      transition: all 0.2s ease;
+    }
+    .share-option:hover {
+      background-color: #f3f4f6;
+    }
+    .share-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 99;
+    }
+    
+    /* Gaya untuk preview gambar */
+    .image-preview {
+      max-width: 100%;
+      max-height: 200px;
+      margin-top: 10px;
+      display: none;
+    }
+    
+    /* Gaya untuk edit profil */
+    .profile-edit-icon {
+      position: absolute;
+      bottom: 30px;
+      right: 20px;
+      background: rgba(0, 0, 0, 0.7);
+      color: white;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .profile-edit-icon:hover {
+      background: rgba(0, 0, 0, 0.7);
+      transform: scale(1.1);
+    }
+    .profile-container {
+      position: relative;
+      display: inline-block;
+    }
+    
+    /* Gaya untuk popup welcome */
+    .welcome-popup {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.8);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      opacity: 1;
+      transition: opacity 0.5s ease;
+    }
+    .welcome-content {
+      background: linear-gradient(135deg, #6ea8f7 0%, #4b47c2 100%);
+      padding: 2rem;
+      border-radius: 15px;
+      text-align: center;
+      color: white;
+      max-width: 80%;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      transform: scale(1);
+      transition: transform 0.3s ease;
+    }
+    .welcome-content h2 {
+      font-size: 1.8rem;
+      margin-bottom: 1rem;
+    }
+    .welcome-content p {
+      margin-bottom: 1.5rem;
+    }
+    
+    /* Gaya untuk kontrol musik */
+    .music-control {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 100;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      transition: all 0.3s ease;
+    }
+    .music-control:hover {
+      transform: scale(1.1);
+      background: rgba(255, 255, 255, 0.3);
+    }
+    .music-control.playing {
+      background: rgba(79, 70, 229, 0.7);
+    }
+    .music-control.playing i {
+      color: white;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col items-center pt-10 pb-20 px-4" style="background: linear-gradient(180deg, #6ea8f7 0%, #4b47c2 100%)">
+  <!-- Popup Welcome -->
+  <div id="welcomePopup" class="welcome-popup">
+    <div class="welcome-content">
+      <h2>Selamat Datang!</h2>
+      <p>Terima kasih telah mengunjungi halaman Ayame Official</p>
+      <div class="welcome-loader">
+        <i class="fas fa-spinner fa-spin fa-2x"></i>
+      </div>
+      <p class="text-sm mt-3">Klik dimanapun untuk melanjutkan</p>
+    </div>
+  </div>
+
+  <!-- Kontrol Musik -->
+  <div class="music-control" id="musicControl">
+    <i class="fas fa-play text-white"></i>
+  </div>
+
+  <!-- Header dengan QR dan Share -->
+  <div class="w-full max-w-md flex justify-between items-center mb-6 px-6">
+    <div class="relative">
+      <i class="fas fa-qrcode text-white text-2xl social-icon" id="qrCodeIcon"></i>
+      <div class="absolute left-0 mt-2 hidden bg-white p-4 rounded-lg shadow-lg z-10" id="qrCodeBox">
+        <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://ayame-official.example.com" alt="QR Code" class="w-100 h-100">
+        <p class="text-xs text-center mt-2 text-gray-600">Scan untuk mengunjungi</p>
+      </div>
+    </div>
+    <i class="fas fa-star text-white text-2xl social-icon" id="adminLoginBtn"></i>
+  </div>
+
+  <!-- Profile Section -->
+  <div class="flex flex-col items-center mb-8">
+    <div class="profile-container">
+      <img alt="Anime girl with black hair making peace sign" class="w-32 h-32 rounded-full object-cover profile-img mb-4" height="128" src="https://storage.googleapis.com/a1aa/image/ae97258a-8834-4d65-b83f-99b2738cf4a7.jpg" width="128" id="profileImage"/>
+      <div class="profile-edit-icon" id="editProfileBtn">
+        <i class="fab fa-meta text-blue-500"></i>
+      </div>
+    </div>
+    <h1 class="text-white text-2xl font-semibold mb-1" id="profileName">Ayame Official</h1>
+    <p class="text-white text-opacity-80 text-sm max-w-xs text-center" id="profileDescription">Welcome to my link collection! Find all my social media and projects here.</p>
+  </div>
+
+  <!-- Link Cards -->
+  <div class="w-full max-w-md space-y-4 mb-10" id="linkContainer">
+    <!-- Link items will be populated here -->
+  </div>
+
+  <!-- Social Media Links -->
+  <div class="w-full max-w-md mb-8">
+    <h2 class="text-white text-lg font-semibold mb-4 text-center">Follow Me</h2>
+    <div class="flex justify-center space-x-6">
+      <a href="#" class="text-white text-2xl social-icon"><i class="fab fa-instagram"></i></a>
+      <a href="#" class="text-white text-2xl social-icon"><i class="fab fa-twitter"></i></a>
+      <a href="#" class="text-white text-2xl social-icon"><i class="fab fa-youtube"></i></a>
+      <a href="#" class="text-white text-2xl social-icon"><i class="fab fa-tiktok"></i></a>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white px-4 py-2 rounded-lg shadow-lg opacity-0 transition-opacity duration-300 z-50">
+    Link copied to clipboard!
+  </div>
+
+  <!-- Share Modal -->
+  <div class="share-overlay" id="shareOverlay"></div>
+  <div class="share-modal" id="shareModal">
+    <h3 class="text-lg font-semibold mb-4 text-center">Bagikan</h3>
+    <div class="share-options">
+      <div class="share-option" data-platform="whatsapp">
+        <i class="fab fa-whatsapp text-3xl text-green-500 mb-1"></i>
+        <p class="text-xs">WhatsApp</p>
+      </div>
+      <div class="share-option" data-platform="facebook">
+        <i class="fab fa-facebook text-3xl text-blue-600 mb-1"></i>
+        <p class="text-xs">Facebook</p>
+      </div>
+      <div class="share-option" data-platform="twitter">
+        <i class="fab fa-twitter text-3xl text-blue-400 mb-1"></i>
+        <p class="text-xs">Twitter</p>
+      </div>
+      <div class="share-option" data-platform="telegram">
+        <i class="fab fa-telegram text-3xl text-blue-500 mb-1"></i>
+        <p class="text-xs">Telegram</p>
+      </div>
+      <div class="share-option" data-platform="copy">
+        <i class="fas fa-link text-3xl text-gray-600 mb-1"></i>
+        <p class="text-xs">Salin Link</p>
+      </div>
+    </div>
+    <button class="w-full mt-4 py-3 bg-gray-200 rounded-md font-semibold" id="closeShareModal">Tutup</button>
+  </div>
+
+  <!-- Admin Login Modal -->
+  <div id="adminLoginModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div class="admin-panel rounded-lg p-6 w-full max-w-md mx-4">
+      <h2 class="text-white text-xl font-semibold mb-4">Admin Login</h2>
+      <input type="password" id="adminCode" placeholder="Enter admin code" class="w-full px-4 py-2 rounded-lg mb-4"/>
+      <div class="flex justify-end space-x-2">
+        <button id="cancelLogin" class="bg-gray-500 text-white px-4 py-2 rounded-lg">Cancel</button>
+        <button id="confirmLogin" class="bg-indigo-600 text-white px-4 py-2 rounded-lg">Login</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Admin Panel -->
+  <div id="adminPanel" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div class="admin-panel rounded-lg p-6 w-full max-w-2xl mx-4 max-h-[80vh] overflow-y-auto">
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="text-white text-xl font-semibold">Admin Panel</h2>
+        <button id="closeAdminPanel" class="text-white">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      
+      <!-- Tab Navigation -->
+      <div class="flex mb-6 border-b border-gray-700">
+        <button class="tab-link py-2 px-4 text-white font-medium border-b-2 border-transparent" data-tab="links">Kelola Link</button>
+        <button class="tab-link py-2 px-4 text-white font-medium border-b-2 border-transparent" data-tab="profile">Edit Profil</button>
+      </div>
+      
+      <!-- Tab Content: Kelola Link -->
+      <div id="tab-links" class="tab-content">
+        <!-- Add New Link Form -->
+        <div class="mb-6">
+          <h3 class="text-white text-lg font-medium mb-3">Tambah Link Baru</h3>
+          <div class="space-y-3">
+            <input type="text" id="newLinkTitle" placeholder="Judul Link" class="w-full px-4 py-2 rounded-lg"/>
+            <input type="text" id="newLinkUrl" placeholder="URL" class="w-full px-4 py-2 rounded-lg"/>
+            
+            <!-- Input file untuk gambar -->
+            <div class="flex flex-col">
+              <label class="text-white mb-1">Gambar</label>
+              <input type="file" id="newLinkImageFile" accept="image/*" class="w-full px-4 py-2 rounded-lg bg-white"/>
+              <img id="imagePreview" class="image-preview rounded-lg mt-2" alt="Preview Gambar"/>
+            </div>
+            
+            <button id="addLinkBtn" class="bg-indigo-600 text-white px-4 py-2 rounded-lg w-full">Tambah Link</button>
+          </div>
+        </div>
+        
+        <!-- Manage Existing Links -->
+        <div>
+          <h3 class="text-white text-lg font-medium mb-3">Kelola Link</h3>
+          <div id="adminLinkList" class="space-y-3">
+            <!-- Links will be populated here -->
+          </div>
+        </div>
+      </div>
+      
+      <!-- Tab Content: Edit Profil -->
+      <div id="tab-profile" class="tab-content hidden">
+        <div class="space-y-4">
+          <h3 class="text-white text-lg font-medium">Edit Profil</h3>
+          
+          <!-- Foto Profil -->
+          <div class="flex flex-col items-center">
+            <div class="profile-container mb-4">
+              <img id="adminProfileImage" src="https://storage.googleapis.com/a1aa/image/ae97258a-8834-4d65-b83f-99b2738cf4a7.jpg" alt="Preview Profil" class="w-32 h-32 rounded-full object-cover profile-img"/>
+              <div class="profile-edit-icon" id="adminProfileImageBtn">
+                <i class="fas fa-camera text-sm"></i>
+              </div>
+            </div>
+            <input type="file" id="profileImageFile" accept="image/*" class="hidden"/>
+          </div>
+          
+          <!-- Nama -->
+          <div>
+            <label class="text-white mb-1 block">Nama</label>
+            <input type="text" id="adminProfileName" placeholder="Nama" class="w-full px-4 py-2 rounded-lg"/>
+          </div>
+          
+          <!-- Deskripsi -->
+          <div>
+            <label class="text-white mb-1 block">Deskripsi</label>
+            <textarea id="adminProfileDescription" placeholder="Deskripsi profil" class="w-full px-4 py-2 rounded-lg" rows="3"></textarea>
+          </div>
+          
+          <!-- Tombol Simpan -->
+          <button id="saveProfileBtn" class="bg-indigo-600 text-white px-4 py-2 rounded-lg w-full mt-4">Simpan Perubahan</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Edit Link -->
+  <div id="editLinkModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div class="admin-panel rounded-lg p-6 w-full max-w-md mx-4">
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-white text-xl font-semibold">Edit Link</h2>
+        <button id="closeEditModal" class="text-white">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      
+      <div class="space-y-3">
+        <input type="hidden" id="editLinkIndex">
+        <input type="text" id="editLinkTitle" placeholder="Judul Link" class="w-full px-4 py-2 rounded-lg"/>
+        <input type="text" id="editLinkUrl" placeholder="URL" class="w-full px-4 py-2 rounded-lg"/>
+        
+        <!-- Input file untuk edit gambar -->
+        <div class="flex flex-col">
+          <label class="text-white mb-1">Gambar</label>
+          <input type="file" id="editLinkImageFile" accept="image/*" class="w-full px-4 py-2 rounded-lg bg-white"/>
+          <img id="editImagePreview" class="image-preview rounded-lg mt-2" alt="Preview Gambar"/>
+          <p class="text-white text-xs mt-1">Kosongkan jika tidak ingin mengubah gambar</p>
+        </div>
+        
+        <div class="flex justify-end space-x-2 pt-3">
+          <button id="cancelEdit" class="bg-gray-500 text-white px-4 py-2 rounded-lg">Batal</button>
+          <button id="saveEdit" class="bg-indigo-600 text-white px-4 py-2 rounded-lg">Simpan</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Audio Element untuk Musik -->
+  <audio id="backgroundMusic" loop>
+    <source src="https://files.catbox.moe/m792pe.mp3" type="audio/mpeg">
+    Browser Anda tidak mendukung elemen audio.
+  </audio>
+
+  <script>
+    // Variabel global untuk status musik
+    let isMusicPlaying = false;
+    let musicInitialized = false;
+
+    // Fungsi untuk menginisialisasi dan memutar musik
+    function initializeMusic() {
+      const backgroundMusic = document.getElementById('backgroundMusic');
+      const musicControl = document.getElementById('musicControl');
+      
+      // Coba putar musik (biasanya akan diblokir browser tanpa interaksi)
+      backgroundMusic.volume = 0.7;
+      
+      // Simpan status preferensi musik
+      const musicPreference = localStorage.getItem('musicPreference');
+      if (musicPreference === 'playing') {
+        backgroundMusic.play().then(() => {
+          isMusicPlaying = true;
+          musicControl.classList.add('playing');
+          musicControl.innerHTML = '<i class="fas fa-pause text-white"></i>';
+        }).catch(e => {
+          console.log('Autoplay prevented, waiting for user interaction');
+          isMusicPlaying = false;
+        });
+      }
+      
+      // Event listener untuk kontrol musik
+      musicControl.addEventListener('click', function() {
+        if (isMusicPlaying) {
+          backgroundMusic.pause();
+          isMusicPlaying = false;
+          this.classList.remove('playing');
+          this.innerHTML = '<i class="fas fa-play text-white"></i>';
+          localStorage.setItem('musicPreference', 'paused');
+        } else {
+          backgroundMusic.play().then(() => {
+            isMusicPlaying = true;
+            this.classList.add('playing');
+            this.innerHTML = '<i class="fas fa-pause text-white"></i>';
+            localStorage.setItem('musicPreference', 'playing');
+          }).catch(e => {
+            console.log('Play failed:', e);
+          });
+        }
+      });
+      
+      musicInitialized = true;
+    }
+
+    // Fungsi untuk menangani popup welcome dan musik
+    function handleWelcomePopup() {
+      const welcomePopup = document.getElementById('welcomePopup');
+      const backgroundMusic = document.getElementById('backgroundMusic');
+      
+      // Tampilkan popup
+      welcomePopup.style.display = 'flex';
+      
+      // Inisialisasi musik
+      if (!musicInitialized) {
+        initializeMusic();
+      }
+      
+      // Event listener untuk interaksi pertama
+      const firstInteraction = function() {
+        // Coba putar musik setelah interaksi pertama
+        if (!isMusicPlaying) {
+          backgroundMusic.play().then(() => {
+            isMusicPlaying = true;
+            document.getElementById('musicControl').classList.add('playing');
+            document.getElementById('musicControl').innerHTML = '<i class="fas fa-pause text-white"></i>';
+            localStorage.setItem('musicPreference', 'playing');
+          }).catch(e => {
+            console.log('Play after interaction failed:', e);
+          });
+        }
+        
+        // Sembunyikan popup
+        welcomePopup.style.opacity = '0';
+        setTimeout(() => {
+          welcomePopup.style.display = 'none';
+        }, 500);
+        
+        // Hapus event listeners setelah interaksi pertama
+        document.removeEventListener('click', firstInteraction);
+        document.removeEventListener('touchstart', firstInteraction);
+        document.removeEventListener('keydown', firstInteraction);
+      };
+      
+      // Tambahkan event listeners untuk berbagai jenis interaksi
+      document.addEventListener('click', firstInteraction);
+      document.addEventListener('touchstart', firstInteraction);
+      document.addEventListener('keydown', firstInteraction);
+      
+      // Sembunyikan popup setelah 5 detik (fallback)
+      setTimeout(() => {
+        welcomePopup.style.opacity = '0';
+        setTimeout(() => {
+          welcomePopup.style.display = 'none';
+        }, 500);
+      }, 5000);
+    }
+
+    // Data untuk link cards (akan diambil dari localStorage jika ada)
+    let linkData = JSON.parse(localStorage.getItem('ayameLinks')) || [
+      {
+        title: "Sc Ryoo Yamada V6",
+        imageUrl: "https://storage.googleapis.com/a1aa/image/c0b33b0b-d284-448f-c522-82c6e0c93d23.jpg",
+        url: "#"
+      },
+      {
+        title: "Script OukaMd",
+        imageUrl: "https://storage.googleapis.com/a1aa/image/1636862e-dd0c-465e-a4c0-bf49906ec7f5.jpg",
+        url: "#"
+      },
+      {
+        title: "Group Ayame Official",
+        imageUrl: "https://storage.googleapis.com/a1aa/image/b0c66bf3-d24b-4b15-8b69-dba378ba84df.jpg",
+        url: "#"
+      },
+      {
+        title: "Xenovia-MD",
+        imageUrl: "https://storage.googleapis.com/a1aa/image/0752e1b0-be9a-4456-94a9-e384401c4d7a.jpg",
+        url: "#"
+      },
+      {
+        title: "Fuxxy-MD",
+        imageUrl: "https://storage.googleapis.com/a1aa/image/d407a557-08b3-40a9-fd84-882a205f0eb1.jpg",
+        url: "#"
+      },
+      {
+        title: "Makima-MD",
+        imageUrl: "https://storage.googleapis.com/a1aa/image/9af3c56e-236f-4105-b797-b449f3688aa2.jpg",
+        url: "#"
+      },
+      {
+        title: "Emilia-MD Update Terbaru",
+        imageUrl: "https://storage.googleapis.com/a1aa/image/017118f3-e042-4af0-4e25-19fb97cb4c59.jpg",
+        url: "#"
+      }
+    ];
+
+    // Data profil (akan diambil dari localStorage jika ada)
+    let profileData = JSON.parse(localStorage.getItem('ayameProfile')) || {
+      name: "Ayame Official",
+      description: "Welcome to my link collection! Find all my social media and projects here.",
+      imageUrl: "https://storage.googleapis.com/a1aa/image/ae97258a-8834-4d65-b83f-99b2738cf4a7.jpg"
+    };
+
+    // Kode admin (dalam aplikasi nyata, ini harus disimpan dengan lebih aman)
+    const ADMIN_CODE = "admin123";
+
+    // Variabel untuk menyimpan data share
+    let currentShareUrl = '';
+    let currentShareTitle = '';
+
+    // Fungsi untuk menyimpan data ke localStorage
+    function saveLinksToStorage() {
+      localStorage.setItem('ayameLinks', JSON.stringify(linkData));
+    }
+
+    // Fungsi untuk menyimpan profil ke localStorage
+    function saveProfileToStorage() {
+      localStorage.setItem('ayameProfile', JSON.stringify(profileData));
+    }
+
+    // Fungsi untuk memperbarui tampilan profil
+    function updateProfileDisplay() {
+      document.getElementById('profileImage').src = profileData.imageUrl;
+      document.getElementById('profileName').textContent = profileData.name;
+      document.getElementById('profileDescription').textContent = profileData.description;
+      
+      // Update juga di admin panel jika terbuka
+      if (!document.getElementById('adminPanel').classList.contains('hidden')) {
+        document.getElementById('adminProfileImage').src = profileData.imageUrl;
+        document.getElementById('adminProfileName').value = profileData.name;
+        document.getElementById('adminProfileDescription').value = profileData.description;
+      }
+    }
+
+    // Fungsi untuk membuat link cards
+    function populateLinks() {
+      const container = document.getElementById('linkContainer');
+      container.innerHTML = '';
+      
+      linkData.forEach((link, index) => {
+        const card = document.createElement('div');
+        card.className = 'bg-white rounded-lg flex items-center justify-between px-4 py-3 card-hover';
+        card.innerHTML = `
+          <a href="${link.url}" target="_blank" class="flex items-center space-x-4 w-full">
+            <img alt="${link.title}" class="w-14 h-14 rounded object-cover" src="${link.imageUrl}"/>
+            <span class="text-indigo-900 text-lg font-semibold">${link.title}</span>
+          </a>
+          <i class="fas fa-share-alt text-indigo-900 text-xl share-btn" data-url="${link.url}" data-title="${link.title}"></i>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    // Fungsi untuk mengisi daftar link di admin panel
+    function populateAdminLinks() {
+      const container = document.getElementById('adminLinkList');
+      container.innerHTML = '';
+      
+      linkData.forEach((link, index) => {
+        const linkItem = document.createElement('div');
+        linkItem.className = 'bg-white bg-opacity-10 rounded-lg p-3 flex justify-between items-center';
+        linkItem.innerHTML = `
+          <div class="flex items-center space-x-3">
+            <img src="${link.imageUrl}" alt="${link.title}" class="w-10 h-10 rounded object-cover">
+            <div>
+              <h4 class="text-white font-medium">${link.title}</h4>
+              <p class="text-white text-opacity-70 text-sm">${link.url}</p>
+            </div>
+          </div>
+          <div class="flex space-x-2">
+            <button class="edit-link text-blue-500" data-index="${index}">
+              <i class="fas fa-edit"></i>
+            </button>
+            <button class="delete-link text-red-500" data-index="${index}">
+              <i class="fas fa-trash"></i>
+            </button>
+          </div>
+        `;
+        container.appendChild(linkItem);
+      });
+      
+      // Tambahkan event listener untuk tombol delete
+      document.querySelectorAll('.delete-link').forEach(button => {
+        button.addEventListener('click', function() {
+          const index = parseInt(this.getAttribute('data-index'));
+          deleteLink(index);
+        });
+      });
+      
+      // Tambahkan event listener untuk tombol edit
+      document.querySelectorAll('.edit-link').forEach(button => {
+        button.addEventListener('click', function() {
+          const index = parseInt(this.getAttribute('data-index'));
+          openEditModal(index);
+        });
+      });
+    }
+
+    // Fungsi untuk menghapus link
+    function deleteLink(index) {
+      if (confirm('Apakah Anda yakin ingin menghapus link ini?')) {
+        linkData.splice(index, 1);
+        saveLinksToStorage();
+        populateLinks();
+        populateAdminLinks();
+        showToast('Link berhasil dihapus');
+      }
+    }
+
+    // Fungsi untuk membuka modal edit
+    function openEditModal(index) {
+      const link = linkData[index];
+      document.getElementById('editLinkIndex').value = index;
+      document.getElementById('editLinkTitle').value = link.title;
+      document.getElementById('editLinkUrl').value = link.url;
+      document.getElementById('editImagePreview').src = link.imageUrl;
+      document.getElementById('editImagePreview').style.display = 'block';
+      
+      // Reset file input
+      document.getElementById('editLinkImageFile').value = '';
+      
+      // Tampilkan modal edit
+      document.getElementById('editLinkModal').classList.remove('hidden');
+    }
+
+    // Fungsi untuk menyimpan perubahan edit
+    function saveLinkEdit() {
+      const index = parseInt(document.getElementById('editLinkIndex').value);
+      const title = document.getElementById('editLinkTitle').value;
+      const url = document.getElementById('editLinkUrl').value;
+      const imageFile = document.getElementById('editLinkImageFile').files[0];
+      
+      if (!title || !url) {
+        alert('Judul dan URL harus diisi!');
+        return;
+      }
+      
+      // Jika ada file gambar baru, konversi ke base64
+      if (imageFile) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          linkData[index] = {
+            title,
+            url,
+            imageUrl: e.target.result
+          };
+          saveLinksToStorage();
+          populateLinks();
+          populateAdminLinks();
+          closeEditModal();
+          showToast('Link berhasil diubah');
+        };
+        reader.readAsDataURL(imageFile);
+      } else {
+        // Gunakan gambar yang sudah ada
+        linkData[index] = {
+          title,
+          url,
+          imageUrl: linkData[index].imageUrl
+        };
+        saveLinksToStorage();
+        populateLinks();
+        populateAdminLinks();
+        closeEditModal();
+        showToast('Link berhasil diubah');
+      }
+    }
+
+    // Fungsi untuk menutup modal edit
+    function closeEditModal() {
+      document.getElementById('editLinkModal').classList.add('hidden');
+    }
+
+    // Fungsi untuk menangani upload gambar baru
+    function handleImageUpload(inputId, previewId) {
+      const input = document.getElementById(inputId);
+      const preview = document.getElementById(previewId);
+      
+      input.addEventListener('change', function() {
+        const file = this.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = function(e) {
+            preview.src = e.target.result;
+            preview.style.display = 'block';
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+    }
+
+    // Fungsi untuk menangani share
+    function setupShareButtons() {
+      document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('share-btn') || e.target.parentElement.classList.contains('share-btn')) {
+          const shareBtn = e.target.classList.contains('share-btn') ? e.target : e.target.parentElement;
+          const url = shareBtn.getAttribute('data-url');
+          const title = shareBtn.getAttribute('data-title') || 'Ayame Official';
+          
+          // Buka modal share
+          openShareModal(url, title);
+        }
+        
+        // Share button di header
+        if (e.target.id === 'shareButton' || e.target.parentElement.id === 'shareButton') {
+          openShareModal(window.location.href, 'Ayame Official Link Collection');
+        }
+      });
+    }
+
+    // Fungsi untuk membuka modal share
+    function openShareModal(url, title) {
+      currentShareUrl = url;
+      currentShareTitle = title;
+      
+      const shareModal = document.getElementById('shareModal');
+      const shareOverlay = document.getElementById('shareOverlay');
+      
+      shareModal.style.display = 'block';
+      shareOverlay.style.display = 'block';
+      
+      // Tambahkan event listener untuk opsi share
+      document.querySelectorAll('.share-option').forEach(option => {
+        option.onclick = function() {
+          const platform = this.getAttribute('data-platform');
+          shareLink(platform, url, title);
+        };
+      });
+    }
+
+    // Fungsi untuk menutup modal share
+    function setupShareModal() {
+      const shareModal = document.getElementById('shareModal');
+      const shareOverlay = document.getElementById('shareOverlay');
+      const closeBtn = document.getElementById('closeShareModal');
+      
+      closeBtn.addEventListener('click', function() {
+        shareModal.style.display = 'none';
+        shareOverlay.style.display = 'none';
+      });
+      
+      shareOverlay.addEventListener('click', function() {
+        shareModal.style.display = 'none';
+        shareOverlay.style.display = 'none';
+      });
+    }
+
+    // Fungsi untuk berbagi berdasarkan platform
+    function shareLink(platform, url, title) {
+      let shareUrl = '';
+      
+      switch(platform) {
+        case 'whatsapp':
+          shareUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(title + ' ' + url)}`;
+          window.open(shareUrl, '_blank');
+          break;
+        case 'facebook':
+          shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
+          window.open(shareUrl, '_blank');
+          break;
+        case 'twitter':
+          shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(url)}`;
+          window.open(shareUrl, '_blank');
+          break;
+        case 'telegram':
+          shareUrl = `https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(title)}`;
+          window.open(shareUrl, '_blank');
+          break;
+        case 'copy':
+          navigator.clipboard.writeText(url)
+            .then(() => {
+              showToast('Link berhasil disalin!');
+            })
+            .catch(err => {
+              console.error('Could not copy text: ', err);
+              showToast('Gagal menyalin link');
+            });
+          break;
+      }
+      
+      // Tutup modal setelah berbagi
+      document.getElementById('shareModal').style.display = 'none';
+      document.getElementById('shareOverlay').style.display = 'none';
+    }
+
+    // Fungsi untuk toggle QR code
+    function setupQrCode() {
+      const qrCodeIcon = document.getElementById('qrCodeIcon');
+      const qrCodeBox = document.getElementById('qrCodeBox');
+      
+      qrCodeIcon.addEventListener('click', function() {
+        qrCodeBox.classList.toggle('hidden');
+      });
+      
+      // Tutup QR code ketika klik di luar
+      document.addEventListener('click', function(e) {
+        if (!qrCodeIcon.contains(e.target) && !qrCodeBox.contains(e.target)) {
+          qrCodeBox.classList.add('hidden');
+        }
+      });
+    }
+
+    // Fungsi untuk toast notification
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.classList.remove('opacity-0');
+      toast.classList.add('opacity-100');
+      
+      setTimeout(() => {
+        toast.classList.remove('opacity-100');
+        toast.classList.add('opacity-0');
+      }, 2000);
+    }
+
+    // Fungsi untuk mengatur admin panel
+    function setupAdminPanel() {
+      const adminLoginBtn = document.getElementById('adminLoginBtn');
+      const adminLoginModal = document.getElementById('adminLoginModal');
+      const adminPanel = document.getElementById('adminPanel');
+      const cancelLogin = document.getElementById('cancelLogin');
+      const confirmLogin = document.getElementById('confirmLogin');
+      const closeAdminPanel = document.getElementById('closeAdminPanel');
+      const adminCodeInput = document.getElementById('adminCode');
+      const addLinkBtn = document.getElementById('addLinkBtn');
+      const saveProfileBtn = document.getElementById('saveProfileBtn');
+      const adminProfileImageBtn = document.getElementById('adminProfileImageBtn');
+      const profileImageFile = document.getElementById('profileImageFile');
+      
+      // Buka modal login admin
+      adminLoginBtn.addEventListener('click', function() {
+        adminLoginModal.classList.remove('hidden');
+      });
+      
+      // Tutup modal login admin
+      cancelLogin.addEventListener('click', function() {
+        adminLoginModal.classList.add('hidden');
+        adminCodeInput.value = '';
+      });
+      
+      // Konfirmasi login admin
+      confirmLogin.addEventListener('click', function() {
+        if (adminCodeInput.value === ADMIN_CODE) {
+          adminLoginModal.classList.add('hidden');
+          adminPanel.classList.remove('hidden');
+          populateAdminLinks();
+          
+          // Isi form profil dengan data saat ini
+          document.getElementById('adminProfileImage').src = profileData.imageUrl;
+          document.getElementById('adminProfileName').value = profileData.name;
+          document.getElementById('adminProfileDescription').value = profileData.description;
+          
+          adminCodeInput.value = '';
+        } else {
+          alert('Kode admin salah!');
+        }
+      });
+      
+      // Tutup admin panel
+      closeAdminPanel.addEventListener('click', function() {
+        adminPanel.classList.add('hidden');
+      });
+      
+      // Tambah link baru dengan upload gambar
+      addLinkBtn.addEventListener('click', function() {
+        const title = document.getElementById('newLinkTitle').value;
+        const url = document.getElementById('newLinkUrl').value;
+        const imageFile = document.getElementById('newLinkImageFile').files[0];
+        
+        if (title && url && imageFile) {
+          // Validasi URL
+          try {
+            new URL(url);
+          } catch (e) {
+            alert('URL tidak valid!');
+            return;
+          }
+          
+          // Konversi gambar ke base64
+          const reader = new FileReader();
+          reader.onload = function(e) {
+            linkData.push({ 
+              title, 
+              url, 
+              imageUrl: e.target.result 
+            });
+            saveLinksToStorage();
+            populateLinks();
+            populateAdminLinks();
+            
+            // Reset form
+            document.getElementById('newLinkTitle').value = '';
+            document.getElementById('newLinkUrl').value = '';
+            document.getElementById('newLinkImageFile').value = '';
+            document.getElementById('imagePreview').style.display = 'none';
+            
+            showToast('Link berhasil ditambahkan');
+          };
+          reader.readAsDataURL(imageFile);
+        } else {
+          alert('Semua field harus diisi!');
+        }
+      });
+      
+      // Simpan perubahan profil
+      saveProfileBtn.addEventListener('click', function() {
+        const name = document.getElementById('adminProfileName').value;
+        const description = document.getElementById('adminProfileDescription').value;
+        
+        if (!name || !description) {
+          alert('Nama dan deskripsi harus diisi!');
+          return;
+        }
+        
+        profileData.name = name;
+        profileData.description = description;
+        
+        saveProfileToStorage();
+        updateProfileDisplay();
+        showToast('Profil berhasil diperbarui');
+      });
+      
+      // Tombol untuk memilih gambar profil baru
+      adminProfileImageBtn.addEventListener('click', function() {
+        profileImageFile.click();
+      });
+      
+      // Handle perubahan gambar profil
+      profileImageFile.addEventListener('change', function() {
+        const file = this.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = function(e) {
+            profileData.imageUrl = e.target.result;
+            document.getElementById('adminProfileImage').src = e.target.result;
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+    }
+
+    // Fungsi untuk mengatur modal edit
+    function setupEditModal() {
+      const closeEditModal = document.getElementById('closeEditModal');
+      const cancelEdit = document.getElementById('cancelEdit');
+      const saveEdit = document.getElementById('saveEdit');
+      
+      closeEditModal.addEventListener('click', closeEditModal);
+      cancelEdit.addEventListener('click', closeEditModal);
+      saveEdit.addEventListener('click', saveLinkEdit);
+    }
+
+    // Fungsi untuk mengatur tab navigation
+    function setupTabs() {
+      const tabLinks = document.querySelectorAll('.tab-link');
+      const tabContents = document.querySelectorAll('.tab-content');
+      
+      tabLinks.forEach(tab => {
+        tab.addEventListener('click', function() {
+          const tabId = this.getAttribute('data-tab');
+          
+          // Nonaktifkan semua tab
+          tabLinks.forEach(t => t.classList.remove('border-indigo-500'));
+          tabContents.forEach(t => t.classList.add('hidden'));
+          
+          // Aktifkan tab yang dipilih
+          this.classList.add('border-indigo-500');
+          document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+        });
+      });
+      
+      // Aktifkan tab pertama secara default
+      if (tabLinks.length > 0) {
+        tabLinks[0].classList.add('border-indigo-500');
+      }
+    }
+
+    // Inisialisasi ketika halaman dimuat
+    document.addEventListener('DOMContentLoaded', function() {
+      // Tampilkan popup welcome dan putar musik
+      handleWelcomePopup();
+      
+      // Muat data profil
+      updateProfileDisplay();
+      populateLinks();
+      setupShareButtons();
+      setupShareModal();
+      setupQrCode();
+      setupAdminPanel();
+      setupEditModal();
+      setupTabs();
+      
+      // Setup preview gambar untuk form tambah
+      handleImageUpload('newLinkImageFile', 'imagePreview');
+      
+      // Setup preview gambar untuk form edit
+      handleImageUpload('editLinkImageFile', 'editImagePreview');
+    });
+  </script>
+</body>
+</html>
