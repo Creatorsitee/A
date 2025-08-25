@@ -154,35 +154,6 @@
     .welcome-content p {
       margin-bottom: 1.5rem;
     }
-    
-    /* Gaya untuk kontrol musik */
-    .music-control {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background: rgba(255, 255, 255, 0.2);
-      backdrop-filter: blur(10px);
-      border-radius: 50%;
-      width: 50px;
-      height: 50px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      z-index: 100;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-      transition: all 0.3s ease;
-    }
-    .music-control:hover {
-      transform: scale(1.1);
-      background: rgba(255, 255, 255, 0.3);
-    }
-    .music-control.playing {
-      background: rgba(79, 70, 229, 0.7);
-    }
-    .music-control.playing i {
-      color: white;
-    }
   </style>
 </head>
 <body class="min-h-screen flex flex-col items-center pt-10 pb-20 px-4" style="background: linear-gradient(180deg, #6ea8f7 0%, #4b47c2 100%)">
@@ -194,13 +165,7 @@
       <div class="welcome-loader">
         <i class="fas fa-spinner fa-spin fa-2x"></i>
       </div>
-      <p class="text-sm mt-3">Klik dimanapun untuk melanjutkan</p>
     </div>
-  </div>
-
-  <!-- Kontrol Musik -->
-  <div class="music-control" id="musicControl">
-    <i class="fas fa-play text-white"></i>
   </div>
 
   <!-- Header dengan QR dan Share -->
@@ -407,54 +372,6 @@
   </audio>
 
   <script>
-    // Variabel global untuk status musik
-    let isMusicPlaying = false;
-    let musicInitialized = false;
-
-    // Fungsi untuk menginisialisasi dan memutar musik
-    function initializeMusic() {
-      const backgroundMusic = document.getElementById('backgroundMusic');
-      const musicControl = document.getElementById('musicControl');
-      
-      // Coba putar musik (biasanya akan diblokir browser tanpa interaksi)
-      backgroundMusic.volume = 0.7;
-      
-      // Simpan status preferensi musik
-      const musicPreference = localStorage.getItem('musicPreference');
-      if (musicPreference === 'playing') {
-        backgroundMusic.play().then(() => {
-          isMusicPlaying = true;
-          musicControl.classList.add('playing');
-          musicControl.innerHTML = '<i class="fas fa-pause text-white"></i>';
-        }).catch(e => {
-          console.log('Autoplay prevented, waiting for user interaction');
-          isMusicPlaying = false;
-        });
-      }
-      
-      // Event listener untuk kontrol musik
-      musicControl.addEventListener('click', function() {
-        if (isMusicPlaying) {
-          backgroundMusic.pause();
-          isMusicPlaying = false;
-          this.classList.remove('playing');
-          this.innerHTML = '<i class="fas fa-play text-white"></i>';
-          localStorage.setItem('musicPreference', 'paused');
-        } else {
-          backgroundMusic.play().then(() => {
-            isMusicPlaying = true;
-            this.classList.add('playing');
-            this.innerHTML = '<i class="fas fa-pause text-white"></i>';
-            localStorage.setItem('musicPreference', 'playing');
-          }).catch(e => {
-            console.log('Play failed:', e);
-          });
-        }
-      });
-      
-      musicInitialized = true;
-    }
-
     // Fungsi untuk menangani popup welcome dan musik
     function handleWelcomePopup() {
       const welcomePopup = document.getElementById('welcomePopup');
@@ -463,49 +380,26 @@
       // Tampilkan popup
       welcomePopup.style.display = 'flex';
       
-      // Inisialisasi musik
-      if (!musicInitialized) {
-        initializeMusic();
-      }
-      
-      // Event listener untuk interaksi pertama
-      const firstInteraction = function() {
-        // Coba putar musik setelah interaksi pertama
-        if (!isMusicPlaying) {
-          backgroundMusic.play().then(() => {
-            isMusicPlaying = true;
-            document.getElementById('musicControl').classList.add('playing');
-            document.getElementById('musicControl').innerHTML = '<i class="fas fa-pause text-white"></i>';
-            localStorage.setItem('musicPreference', 'playing');
-          }).catch(e => {
-            console.log('Play after interaction failed:', e);
-          });
-        }
-        
-        // Sembunyikan popup
-        welcomePopup.style.opacity = '0';
-        setTimeout(() => {
-          welcomePopup.style.display = 'none';
-        }, 500);
-        
-        // Hapus event listeners setelah interaksi pertama
-        document.removeEventListener('click', firstInteraction);
-        document.removeEventListener('touchstart', firstInteraction);
-        document.removeEventListener('keydown', firstInteraction);
+      // Coba putar musik
+      const playMusic = function() {
+        backgroundMusic.play().catch(e => {
+          console.log('Autoplay prevented:', e);
+        });
       };
       
-      // Tambahkan event listeners untuk berbagai jenis interaksi
-      document.addEventListener('click', firstInteraction);
-      document.addEventListener('touchstart', firstInteraction);
-      document.addEventListener('keydown', firstInteraction);
+      // Coba putar musik dengan interaksi pengguna
+      document.addEventListener('click', function firstClick() {
+        playMusic();
+        document.removeEventListener('click', firstClick);
+      });
       
-      // Sembunyikan popup setelah 5 detik (fallback)
+      // Sembunyikan popup setelah 3 detik
       setTimeout(() => {
         welcomePopup.style.opacity = '0';
         setTimeout(() => {
           welcomePopup.style.display = 'none';
-        }, 500);
-      }, 5000);
+        }, 500); // Sesuaikan dengan durasi transisi CSS
+      }, 3000);
     }
 
     // Data untuk link cards (akan diambil dari localStorage jika ada)
